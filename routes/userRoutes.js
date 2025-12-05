@@ -13,7 +13,8 @@ const userRouter = express.Router();
  */
 // userRouter.get("/", getAllUsers);
 
-userRouter.get("/",authMiddleware ,adminOnly,getAllUsers);
+// userRouter.get("/",authMiddleware ,adminOnly,getAllUsers);
+userRouter.get("/",authMiddleware ,getAllUsers);
 
 /**
  * GET /api/user/:id

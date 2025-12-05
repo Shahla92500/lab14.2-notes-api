@@ -19,10 +19,8 @@ try {
 // POST /api/notes - Create a new note
 router.post('/', async (req, res) => {
   try {
-    const note = await Note.create({
-      ...req.body,
-      user: req.user._id // Save the user’s _id to the new note’s user field.
-    });
+    const note = await Note.create({...req.body,  user: req.user._id  });// Save the user’s _id to the new note’s user field.
+
     res.status(201).json(note);
   } catch (err) {
     res.status(400).json(err);
@@ -31,10 +29,15 @@ router.post('/', async (req, res) => {
 
 router.get('/:id', async (req, res) => {
 
+
 try {
-    const noteOne = await Note.findOne({user: req.params.id}); // It should find notes owned by the logged in user.
-    if (req.params.id !== noteOne._id) {
-        return res.status(403).json({message:"any note is not found for this user"})
+    const noteOne = await Note.findById(req.params.id); // It should find notes owned by the logged in user.
+    console.log("here: ",noteOne);
+    if (!noteOne) {
+      return res.status(403).json({message:"any note is not found for this user"})
+    }
+    if (req.user._id !== noteOne.user.toString()) { //.toString() check it
+        return res.status(403).json({message:"user not authorized"})
     }
     res.json(noteOne);
   } catch (err) {
@@ -47,10 +50,11 @@ router.put('/:id', async (req, res) => {
   try {
     // This needs an authorization check
     const noteToUpdate = await Note.findById(req.params.id);
-
+ console.log("here", req.params.id);
     if (req.user._id !== noteToUpdate.user.toString()){
         return res.status(403).json({message:"User is not authorized to update this note"})
     }
+   
     
     const note = await Note.findByIdAndUpdate(req.params.id, req.body, { new: true });
     if (!note) {

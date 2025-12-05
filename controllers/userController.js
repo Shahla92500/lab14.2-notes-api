@@ -5,7 +5,7 @@ const secret = process.env.JWT_SECRET;
 const expiration = '2h'; // Token will be valid for 2 hours
 
 async function getAllUsers(req, res) {
-  console.log(req.user);
+  console.log('In get All user; ',req.user);
 
   if (!req.user) {
     return res.status(401).json({ message: 'You must be logged in to see this!' });
